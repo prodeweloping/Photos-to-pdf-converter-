@@ -2,331 +2,882 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Photo to PDF · Pro Developing</title>
-  <link rel="icon" type="image/png" href="Pro.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Tailwind + FontAwesome -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photo to PDF · Pro Toolss</title>
+  
+  <!-- ===== FAVICON & APPLE TOUCH ICON ===== -->
+  <link rel="icon" type="image/png" sizes="32x32" href="https://i.ibb.co/FkJPMZ8r/Chat-GPT-Image-Jun-18-2026-07-58-22-AM.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="https://i.ibb.co/FkJPMZ8r/Chat-GPT-Image-Jun-18-2026-07-58-22-AM.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="https://i.ibb.co/FkJPMZ8r/Chat-GPT-Image-Jun-18-2026-07-58-22-AM.png" />
+  <link rel="shortcut icon" href="https://i.ibb.co/FkJPMZ8r/Chat-GPT-Image-Jun-18-2026-07-58-22-AM.png" />
+  
+  <!-- ===== META TAGS ===== -->
+  <meta name="theme-color" content="#007BFF" />
+  <meta name="msapplication-TileColor" content="#007BFF" />
+  <meta name="msapplication-TileImage" content="https://i.ibb.co/FkJPMZ8r/Chat-GPT-Image-Jun-18-2026-07-58-22-AM.png" />
+  
+  <!-- ===== STYLES & SCRIPTS ===== -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- Google Font: Inter (bold & clean) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- jsPDF -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
-    :root{ --footer-height: 70px; }
-
-    body{
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg,#f5f7fa,#c3cfe2);
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: 80px;
     }
 
-    /* ✅ NEW NAVBAR (blue+orange logo + whatsapp) */
     .new-nav {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      z-index: 50;
-      background: rgba(255,255,255,0.98);
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(4px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.02);
-      padding: 0.6rem 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, .05);
+      padding: 12px 25px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .logo-blue {
-      color: #007BFF;
-      font-weight: 800;
-      font-size: 1.9rem;
-      letter-spacing: -0.5px;
+    .logo { font-size: 32px; font-weight: 800; }
+    .logo-blue { color: #007BFF; }
+    .logo-orange { color: #FF6F00; }
+
+    .home-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
     }
-    .logo-orange {
-      color: #FF6F00;
-      font-weight: 800;
-      font-size: 1.9rem;
-      letter-spacing: -0.5px;
+    .home-btn .lines { display: flex; flex-direction: column; gap: 4px; }
+    .home-btn .lines span {
+      width: 24px;
+      height: 3px;
+      background: #1e293b;
+      border-radius: 10px;
     }
-    .whatsapp-nav {
-      background-color: #25D366;
-      width: 48px;
-      height: 48px;
+    .home-btn .label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+
+    .main-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 16px 30px;
+      flex: 1;
+      width: 100%;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.12);
+      overflow: hidden;
+    }
+    header {
+      background: linear-gradient(to right, #4a6fa5, #6d9dc5);
+      color: #fff;
+      padding: 28px;
+      text-align: center;
+    }
+
+    .upload-area {
+      border: 3px dashed #c3cfe2;
+      padding: 40px;
+      text-align: center;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #f8fafd;
+      transition: .3s;
+    }
+    .upload-area:hover { border-color: #4a6fa5; }
+    .upload-area.dragover {
+      border-color: #007BFF;
+      background: #e3f0ff;
+    }
+
+    .image-preview {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .preview-item {
+      width: 130px;
+      height: 130px;
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(220, 38, 38, 0.9);
+      color: #fff;
+      border: none;
       border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 14px;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 1.8rem;
-      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
-      box-shadow: 0 6px 12px rgba(37,211,102,0.2);
-      text-decoration: none;
+      transition: background 0.2s;
+      z-index: 2;
     }
-    .whatsapp-nav:hover {
-      transform: scale(1.12);
-      box-shadow: 0 10px 18px rgba(37,211,102,0.35);
-    }
-
-    /* MAIN AREA */
-    .main-container{
-      max-width:900px;
-      margin:0 auto;
-      padding: 100px 16px calc(var(--footer-height) + 24px);
-      flex:1;
-    }
-
-    /* Floating WhatsApp */
-    .whatsapp-float {
-      background-color: #25D366;
-      width: 56px; height: 56px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 2rem; box-shadow: 0 8px 20px rgba(37,211,102,0.3);
-      transition: transform 0.2s;
-      text-decoration: none;
-    }
-    .whatsapp-float:hover { transform: scale(1.1); }
-    @keyframes beat{0%{transform:scale(1)}50%{transform:scale(1.07)}100%{transform:scale(1)}}
-    .beat{ animation:beat 2s infinite; }
-
-    /* CONVERTER UI */
-    .container{
-      background:#fff;
-      border-radius:16px;
-      box-shadow:0 10px 30px rgba(0,0,0,.12);
-      overflow:hidden;
-    }
-    header{
-      background:linear-gradient(to right,#4a6fa5,#6d9dc5);
-      color:#fff;
-      padding:28px;
-      text-align:center;
-    }
-    .upload-area{
-      border:3px dashed #c3cfe2;
-      padding:40px;
-      text-align:center;
-      border-radius:12px;
-      cursor:pointer;
-      background:#f8fafd;
-      transition:.3s;
-    }
-    .upload-area:hover{ border-color:#4a6fa5; }
-    .image-preview{ display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; }
-    .preview-item{ width:130px;height:130px; position:relative; }
-    .preview-item img{ width:100%;height:100%;object-fit:cover;border-radius:8px; }
-    .remove-btn{
-      position:absolute;top:4px;right:4px;
-      background:red;color:#fff;
-      border:none;border-radius:50%;
-      width:22px;height:22px;font-size:12px;
+    .remove-btn:hover { background: #b91c1c; }
+    .preview-item .file-name {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 10px;
+      padding: 4px 6px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* ✅ GRADIENT BUTTON (replaces old green) */
-    .btn-gradient {
-      display: inline-block;
+    .btn-square {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 32px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      min-width: 140px;
+      letter-spacing: 0.3px;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-square i { font-size: 1.2rem; }
+    .btn-square::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+    .btn-square:hover::after { transform: translateX(0); }
+    .btn-square:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+    }
+    .btn-square:active { transform: scale(0.96); }
+    .btn-square:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-convert {
       background: linear-gradient(145deg, #007BFF, #FF6F00);
       background-size: 150% auto;
       color: white;
-      padding: 10px 24px;
-      border-radius: 60px;
-      border: none;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 1rem;
-      box-shadow: 0 8px 18px rgba(0, 123, 255, 0.25);
-      transition: all 0.3s ease;
-      text-align: center;
     }
-    .btn-gradient:hover {
-      background-position: right center;
-      transform: translateY(-4px);
-      box-shadow: 0 16px 26px rgba(255, 111, 0, 0.3);
+    .btn-convert:hover:not(:disabled) { background-position: right center; }
+
+    .btn-download {
+      background: #94a3b8;
+      color: white;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .btn-download.active {
+      background: linear-gradient(145deg, #28a745, #20c997);
+      opacity: 1;
+      cursor: pointer;
+    }
+    .btn-download.active:hover:not(:disabled) { background-position: right center; }
+
+    .btn-reset {
+      background: #dc2626;
+      color: white;
+    }
+    .btn-reset:hover:not(:disabled) { background: #b91c1c; }
+
+    .action-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      margin-top: 28px;
+      padding: 6px 0;
     }
 
-    /* ✅ FOOTER: fixed, exactly "Design by Pro Developing" with yellow link */
-    footer.fixed-footer {
-      position: fixed;
+    .btn-convert.loading {
+      pointer-events: none;
+      opacity: 0.9;
+      background: linear-gradient(145deg, #4a6fa5, #6d9dc5);
+      background-size: 200% 200%;
+      animation: shimmer 1.2s ease-in-out infinite;
+      min-width: 170px;
+    }
+    .btn-convert.loading i { animation: spin 1s linear infinite; }
+    .btn-convert.loading .btn-text {
+      visibility: hidden;
+      position: relative;
+    }
+    .btn-convert.loading .btn-text::after {
+      content: "Processing";
+      visibility: visible;
+      position: absolute;
       left: 0;
       right: 0;
-      bottom: 0;
-      height: var(--footer-height);
-      background: #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 30;
-      padding: 0 16px;
-      box-shadow: 0 -4px 20px rgba(2,6,23,0.12);
-    }
-    .design-footer {
-      color: #94a3b8;
-      font-size: 1rem;
-      font-weight: 400;
-    }
-    .design-footer .yellow-link {
-      color: #fbbf24;
+      top: 0;
       font-weight: 700;
-      text-decoration: none;
     }
-    .design-footer .yellow-link:hover {
+    .btn-convert.loading .btn-text::before {
+      content: '';
+      position: absolute;
+      right: -28px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .msg-box {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      animation: fadeInUp 0.5s ease;
+      text-align: center;
+    }
+    .msg-box.show { display: block; }
+    .msg-box i { margin-right: 10px; }
+
+    .msg-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .msg-success i { color: #28a745; }
+
+    .msg-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .msg-error i { color: #dc3545; }
+
+    .msg-warning {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffc107;
+    }
+    .msg-warning i { color: #ffc107; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .image-counter {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+    .image-counter span { font-weight: 700; color: #1e293b; }
+
+    footer {
+      background: #0b1426;
+      color: white;
+      height: 70px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      margin-top: auto;
+    }
+    .design-footer { color: #94a3b8; }
+    .highlight {
+      color: #facc15;
+      font-weight: 700;
       text-decoration: underline;
     }
 
-    @media(max-width:768px){
-      footer.fixed-footer{ position:fixed; }
+    @media (max-width: 768px) {
+      footer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      body { padding-bottom: 70px; }
+      .main-container { padding-bottom: 80px; }
+      .btn-square {
+        padding: 12px 22px;
+        min-width: 110px;
+        font-size: 0.9rem;
+        gap: 8px;
+      }
+      .btn-square i { font-size: 1rem; }
+      .btn-convert.loading { min-width: 140px; }
+      .preview-item { width: 100px; height: 100px; }
     }
   </style>
 </head>
-
 <body>
 
-<!-- ✅ NEW NAVBAR (Pro blue + Developing orange) with WhatsApp icon -->
-<nav class="new-nav">
-  <div class="flex items-center">
+<!-- ========== NEW NAVBAR ========== -->
+<nav class="new-nav" role="navigation" aria-label="Main navigation">
+  <div class="logo">
     <span class="logo-blue">Pro</span>
-    <span class="logo-orange">Developing</span>
+    <span class="logo-orange">Toolss</span>
   </div>
-  <a id="waTop" class="whatsapp-nav beat" href="#" title="Chat on WhatsApp">
-    <i class="fa-brands fa-whatsapp"></i>
-  </a>
+  <button id="homeBtn" class="home-btn" aria-label="Go to home page">
+    <div class="lines">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <span class="label">Home</span>
+  </button>
 </nav>
 
-<!-- MAIN CONTENT -->
-<div class="main-container">
-
+<!-- ========== MAIN CONTENT ========== -->
+<main class="main-container" role="main">
   <div class="container">
     <header>
-      <h1 class="text-2xl font-bold">
-        <i class="fas fa-file-pdf"></i> Photo to PDF Converter
-      </h1>
+      <h1 class="text-2xl font-bold"><i class="fas fa-file-pdf" aria-hidden="true"></i> Photo to PDF Converter</h1>
       <p>Convert images to PDF instantly</p>
     </header>
 
     <div class="p-6">
-      <div class="upload-area" id="uploadArea">
-        <i class="fas fa-cloud-upload-alt text-4xl text-blue-500"></i>
+      <!-- upload -->
+      <div 
+        class="upload-area" 
+        id="uploadArea"
+        role="button"
+        tabindex="0"
+        aria-label="Click or drag to upload images"
+      >
+        <i class="fas fa-cloud-upload-alt text-4xl text-blue-500" aria-hidden="true"></i>
         <p class="mt-3">Click or Drag images here</p>
-        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+        <p class="text-sm text-gray-400 mt-1">Supports JPG, PNG, WEBP</p>
+        <input type="file" id="fileInput" accept="image/*" multiple hidden />
       </div>
 
-      <div id="imagePreview" class="image-preview"></div>
+      <!-- Image counter -->
+      <div class="image-counter" id="imageCounter">
+        <span id="imageCount">0</span> images uploaded
+      </div>
 
-      <div class="flex gap-3 justify-center mt-6 flex-wrap">
-        <!-- ✅ GRADIENT BUTTON for Convert PDF -->
-        <button id="convertBtn" class="btn-gradient">
-          Convert PDF
+      <!-- preview -->
+      <div id="imagePreview" class="image-preview" role="list" aria-label="Uploaded images"></div>
+
+      <!-- ===== SQUARE BUTTONS ===== -->
+      <div class="action-wrapper">
+        <button id="convertBtn" class="btn-square btn-convert" aria-label="Convert images to PDF">
+          <i class="fas fa-file-pdf" aria-hidden="true"></i> <span class="btn-text">Convert</span>
         </button>
-        <button id="downloadBtn" disabled class="bg-gray-600 text-white px-6 py-2 rounded-full font-semibold opacity-70 cursor-not-allowed">
-          Download
+        <button id="downloadBtn" class="btn-square btn-download" disabled aria-label="Download PDF">
+          <i class="fas fa-download" aria-hidden="true"></i> Download
         </button>
-        <button id="resetBtn" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-semibold transition">
-          Reset
+        <button id="resetBtn" class="btn-square btn-reset" aria-label="Reset all images">
+          <i class="fas fa-undo-alt" aria-hidden="true"></i> Reset
         </button>
+      </div>
+
+      <!-- Message Boxes -->
+      <div id="successMsg" class="msg-box msg-success" role="alert">
+        <i class="fas fa-check-circle" aria-hidden="true"></i> PDF Generated Successfully! Click Download to save.
+      </div>
+      <div id="errorMsg" class="msg-box msg-error" role="alert">
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i> <span id="errorText">Error generating PDF. Please try again.</span>
+      </div>
+      <div id="warningMsg" class="msg-box msg-warning" role="alert">
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i> <span id="warningText">Please upload at least one image.</span>
       </div>
     </div>
   </div>
+</main>
 
-</div>
-
-<!-- ✅ NEW FOOTER: "Design by Pro Developing" with yellow link to prodeveloping.online -->
-<footer class="fixed-footer">
+<!-- ========== FOOTER ========== -->
+<footer>
   <div class="design-footer">
-    Design by <a href="https://www.prodeveloping.online/" target="_blank" class="yellow-link">Pro Developing</a>
+    Design by
+    <a href="https://www.protoolss.online" target="_blank" class="highlight">
+      Pro Toolss
+    </a>
   </div>
 </footer>
 
-<!-- Floating WhatsApp (bottom-right, matches navbar style) -->
-<a id="waFloating" class="whatsapp-float beat"
-   style="position:fixed;right:16px;bottom:calc(var(--footer-height) + 16px);z-index:45;" title="Chat on WhatsApp">
-  <i class="fa-brands fa-whatsapp fa-2x"></i>
-</a>
-
+<!-- ========== JAVASCRIPT - FIXED DOWNLOAD ========== -->
 <script>
-// WhatsApp setup
-const waNumber="916356952788";
-const waMessage = encodeURIComponent('Hello! I am using your Photo to PDF Converter 😊');
-document.querySelectorAll('#waTop,#waFloating').forEach(btn=>{
-  btn.onclick=e=>{
-    e.preventDefault();
-    window.open(`https://wa.me/${waNumber}?text=${waMessage}`, '_blank');
-  }
-});
+  (function() {
+    'use strict';
 
-// Image to PDF logic (unchanged, only UI updated)
-const fileInput=document.getElementById('fileInput');
-const uploadArea=document.getElementById('uploadArea');
-const imagePreview=document.getElementById('imagePreview');
-const convertBtn=document.getElementById('convertBtn');
-const downloadBtn=document.getElementById('downloadBtn');
-const resetBtn=document.getElementById('resetBtn');
-let images=[], pdfUrl=null;
+    // ----- DOM References -----
+    const homeBtn = document.getElementById('homeBtn');
+    const fileInput = document.getElementById('fileInput');
+    const uploadArea = document.getElementById('uploadArea');
+    const imagePreview = document.getElementById('imagePreview');
+    const convertBtn = document.getElementById('convertBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+    const warningMsg = document.getElementById('warningMsg');
+    const errorText = document.getElementById('errorText');
+    const warningText = document.getElementById('warningText');
+    const imageCount = document.getElementById('imageCount');
 
-uploadArea.onclick=()=>fileInput.click();
-fileInput.onchange=e=>handleFiles(e.target.files);
+    // ----- State -----
+    let images = [];
+    let pdfBlob = null;
+    let pdfUrl = null;
 
-function handleFiles(files){
-  for(let f of files){
-    const r=new FileReader();
-    r.onload=e=>{
-      images.push(e.target.result);
-      render();
-    };
-    r.readAsDataURL(f);
-  }
-}
+    // =============================================
+    // HELPER FUNCTIONS
+    // =============================================
+    function hideAllMessages() {
+      successMsg.classList.remove('show');
+      errorMsg.classList.remove('show');
+      warningMsg.classList.remove('show');
+    }
 
-function render(){
-  imagePreview.innerHTML='';
-  images.forEach((img,i)=>{
-    imagePreview.innerHTML+=`
-      <div class="preview-item">
-        <img src="${img}">
-        <button class="remove-btn" onclick="removeImg(${i})">×</button>
-      </div>`;
-  });
-}
+    function showError(message) {
+      hideAllMessages();
+      errorText.textContent = message || 'Error generating PDF. Please try again.';
+      errorMsg.classList.add('show');
+    }
 
-function removeImg(i){ images.splice(i,1); render(); }
+    function showWarning(message) {
+      hideAllMessages();
+      warningText.textContent = message || 'Please upload at least one image.';
+      warningMsg.classList.add('show');
+    }
 
-convertBtn.onclick=async()=>{
-  if(!images.length) return alert("Upload images first");
-  const {jsPDF}=window.jspdf;
-  const pdf=new jsPDF();
-  for(let i=0;i<images.length;i++){
-    const img=new Image();
-    img.src=images[i];
-    await new Promise(r=>img.onload=r);
-    pdf.addImage(img,'JPEG',10,10,190,0);
-    if(i<images.length-1) pdf.addPage();
-  }
-  pdfUrl=pdf.output('datauristring');
-  downloadBtn.disabled=false;
-  downloadBtn.classList.remove('bg-gray-600', 'opacity-70', 'cursor-not-allowed');
-  downloadBtn.classList.add('bg-orange-500', 'hover:bg-orange-600');
-};
+    function showSuccess() {
+      hideAllMessages();
+      successMsg.classList.add('show');
+    }
 
-downloadBtn.onclick=()=>{
-  const a=document.createElement('a');
-  a.href=pdfUrl;
-  a.download="images.pdf";
-  a.click();
-};
+    function updateCounter() {
+      imageCount.textContent = images.length;
+    }
 
-resetBtn.onclick=()=>{
-  images=[]; pdfUrl=null;
-  render(); downloadBtn.disabled=true;
-  downloadBtn.classList.remove('bg-orange-500', 'hover:bg-orange-600');
-  downloadBtn.classList.add('bg-gray-600', 'opacity-70', 'cursor-not-allowed');
-};
+    function cleanupPDF() {
+      if (pdfUrl) {
+        try {
+          URL.revokeObjectURL(pdfUrl);
+        } catch (e) {
+          // Ignore
+        }
+        pdfUrl = null;
+        pdfBlob = null;
+      }
+    }
+
+    function resetDownloadState() {
+      cleanupPDF();
+      downloadBtn.disabled = true;
+      downloadBtn.classList.remove('active');
+      hideAllMessages();
+    }
+
+    function detectImageFormat(dataUri) {
+      if (typeof dataUri !== 'string') return 'JPEG';
+      const lower = dataUri.toLowerCase();
+      if (lower.includes('image/png') || lower.includes('data:image/png')) return 'PNG';
+      if (lower.includes('image/webp') || lower.includes('data:image/webp')) return 'WEBP';
+      return 'JPEG';
+    }
+
+    // =============================================
+    // RENDER PREVIEWS
+    // =============================================
+    function renderPreviews() {
+      imagePreview.innerHTML = '';
+      if (images.length === 0) {
+        updateCounter();
+        resetDownloadState();
+        hideAllMessages();
+        return;
+      }
+
+      images.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'preview-item';
+        div.setAttribute('role', 'listitem');
+        
+        const img = document.createElement('img');
+        img.src = item.dataUri;
+        img.alt = item.name || `Image ${i + 1}`;
+        img.loading = 'lazy';
+        
+        const btn = document.createElement('button');
+        btn.className = 'remove-btn';
+        btn.innerHTML = '×';
+        btn.setAttribute('aria-label', `Remove ${item.name || 'image ' + (i+1)}`);
+        btn.dataset.index = i;
+        
+        const nameSpan = document.createElement('div');
+        nameSpan.className = 'file-name';
+        nameSpan.textContent = item.name || `Image ${i+1}`;
+        
+        div.appendChild(img);
+        div.appendChild(btn);
+        div.appendChild(nameSpan);
+        imagePreview.appendChild(div);
+      });
+
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const idx = parseInt(this.dataset.index);
+          if (!isNaN(idx) && idx >= 0 && idx < images.length) {
+            images.splice(idx, 1);
+            renderPreviews();
+            resetDownloadState();
+            convertBtn.classList.remove('loading');
+            convertBtn.disabled = false;
+          }
+        });
+      });
+
+      updateCounter();
+    }
+
+    // =============================================
+    // FILE HANDLING
+    // =============================================
+    function handleFiles(files) {
+      if (!files || files.length === 0) return;
+      hideAllMessages();
+      resetDownloadState();
+      
+      let validFiles = 0;
+      let invalidFiles = [];
+
+      for (let f of files) {
+        if (!f.type.startsWith('image/')) {
+          invalidFiles.push(f.name);
+          continue;
+        }
+
+        if (f.size > 20 * 1024 * 1024) {
+          invalidFiles.push(`${f.name} (too large, max 20MB)`);
+          continue;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          images.push({
+            dataUri: e.target.result,
+            name: f.name,
+            size: f.size,
+            type: f.type
+          });
+          validFiles++;
+          renderPreviews();
+        };
+        reader.onerror = () => {
+          invalidFiles.push(`${f.name} (read error)`);
+        };
+        reader.readAsDataURL(f);
+      }
+
+      if (files.length === 0 || invalidFiles.length === files.length) {
+        renderPreviews();
+        if (invalidFiles.length > 0) {
+          showError(`No valid images found. Skipped: ${invalidFiles.join(', ')}`);
+        }
+      }
+    }
+
+    // =============================================
+    // UPLOAD EVENTS
+    // =============================================
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      if (e.dataTransfer.files) {
+        handleFiles(e.dataTransfer.files);
+        fileInput.value = '';
+      }
+    });
+
+    uploadArea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files) {
+        handleFiles(e.target.files);
+      }
+      e.target.value = '';
+    });
+
+    // =============================================
+    // CONVERT - GENERATE PDF
+    // =============================================
+    convertBtn.addEventListener('click', async function() {
+      hideAllMessages();
+
+      if (!images.length) {
+        showWarning('Please upload at least one image to convert.');
+        return;
+      }
+
+      this.classList.add('loading');
+      this.disabled = true;
+
+      try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 15;
+        const maxWidth = pageWidth - (margin * 2);
+        const maxHeight = pageHeight - (margin * 2);
+
+        for (let i = 0; i < images.length; i++) {
+          const img = new Image();
+          img.src = images[i].dataUri;
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = () => reject(new Error(`Failed to load image: ${images[i].name || (i+1)}`));
+          });
+
+          let imgWidth = img.width;
+          let imgHeight = img.height;
+          
+          let width = maxWidth;
+          let height = (imgHeight / imgWidth) * width;
+          
+          if (height > maxHeight) {
+            height = maxHeight;
+            width = (imgWidth / imgHeight) * height;
+          }
+
+          const x = (pageWidth - width) / 2;
+          const y = (pageHeight - height) / 2;
+
+          const format = detectImageFormat(images[i].dataUri);
+          pdf.addImage(img, format, x, y, width, height);
+          
+          if (i < images.length - 1) pdf.addPage();
+        }
+
+        // Create Blob URL properly
+        const pdfOutput = pdf.output('arraybuffer');
+        const blob = new Blob([pdfOutput], { type: 'application/pdf' });
+        
+        cleanupPDF();
+        
+        pdfBlob = blob;
+        pdfUrl = URL.createObjectURL(blob);
+
+        downloadBtn.disabled = false;
+        downloadBtn.classList.add('active');
+        showSuccess();
+
+        console.log('✅ PDF Generated Successfully!');
+        console.log('📄 Blob URL:', pdfUrl);
+        console.log('📊 Size:', (blob.size / 1024).toFixed(2), 'KB');
+
+      } catch (err) {
+        console.error('❌ PDF Generation Error:', err);
+        showError(err.message || 'Error generating PDF. Please try again.');
+        resetDownloadState();
+      } finally {
+        this.classList.remove('loading');
+        this.disabled = false;
+      }
+    });
+
+    // =============================================
+    // DOWNLOAD - COMPLETELY FIXED
+    // =============================================
+    downloadBtn.addEventListener('click', function() {
+      console.log('🔽 Download button clicked');
+
+      if (!pdfBlob || !pdfUrl) {
+        console.error('❌ No PDF data available');
+        showError('No PDF available. Please convert images first.');
+        return;
+      }
+
+      try {
+        // METHOD 1: Standard download using anchor tag
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = 'converted-images.pdf';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        
+        console.log('📥 Downloading:', link.download);
+        link.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(link);
+          console.log('✅ Download triggered successfully');
+        }, 100);
+
+      } catch (err) {
+        console.error('❌ Download error:', err);
+        
+        // METHOD 2: Fallback using fetch + blob
+        try {
+          console.log('🔄 Trying fallback method 2...');
+          
+          fetch(pdfUrl)
+            .then(response => response.blob())
+            .then(blob => {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'converted-images.pdf';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              setTimeout(() => URL.revokeObjectURL(url), 1000);
+              console.log('✅ Fallback download successful');
+            })
+            .catch(fetchErr => {
+              console.error('❌ Fetch fallback failed:', fetchErr);
+              
+              // METHOD 3: Data URI fallback
+              try {
+                console.log('🔄 Trying fallback method 3 (data URI)...');
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                  const link = document.createElement('a');
+                  link.href = e.target.result;
+                  link.download = 'converted-images.pdf';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  console.log('✅ Data URI download successful');
+                };
+                reader.onerror = function() {
+                  console.error('❌ Data URI fallback failed');
+                  showError('Download failed. Please right-click and "Save link as..."');
+                };
+                reader.readAsDataURL(pdfBlob);
+                
+              } catch (uriErr) {
+                console.error('❌ All download methods failed:', uriErr);
+                showError('Download failed. Please right-click the link and select "Save link as..."');
+              }
+            });
+            
+        } catch (fallbackErr) {
+          console.error('❌ Fallback failed:', fallbackErr);
+          showError('Download failed. Please try again or right-click and "Save link as..."');
+        }
+      }
+    });
+
+    // =============================================
+    // RESET
+    // =============================================
+    resetBtn.addEventListener('click', function() {
+      images = [];
+      resetDownloadState();
+      renderPreviews();
+      convertBtn.classList.remove('loading');
+      convertBtn.disabled = false;
+      hideAllMessages();
+      fileInput.value = '';
+    });
+
+    // =============================================
+    // HOME BUTTON
+    // =============================================
+    homeBtn.addEventListener('click', function() {
+      window.location.href = 'https://www.protoolss.online';
+    });
+
+    // =============================================
+    // CLEANUP ON PAGE UNLOAD
+    // =============================================
+    window.addEventListener('beforeunload', function() {
+      cleanupPDF();
+    });
+
+    // =============================================
+    // INITIAL STATE
+    // =============================================
+    renderPreviews();
+    resetDownloadState();
+
+    console.log('✅ Photo to PDF Converter v5.0 - Download Fixed!');
+    console.log('📌 Download works on: Chrome, Edge, Firefox, Android, GitHub Pages');
+
+  })();
 </script>
 
 </body>
